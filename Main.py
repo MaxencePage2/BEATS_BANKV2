@@ -458,7 +458,10 @@ class LoginWindow(QWidget):
             self._show_error("Veuillez remplir tous les champs.")
             return
         if username == "admin" and password == "1234":
-            QMessageBox.information(self, "Succès", f"Bienvenue, {username} !")
+            from dashboard import DashboardWindow
+            self.hide()
+            self._dashboard = DashboardWindow(username=username, login_window=self)
+            self._dashboard.show()
         else:
             self._show_error("Identifiant ou mot de passe incorrect.")
             self.input_password.clear()
