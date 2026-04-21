@@ -100,7 +100,7 @@ class MatrixBackground(QWidget):
 class LoginCard(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedSize(400, 500)
+        self.setFixedSize(400, 540)
         self._glow_angle = 0.0
         self._anim = QTimer(self)
         self._anim.timeout.connect(self._rotate_glow)
@@ -193,7 +193,7 @@ class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("BEATS BANK — Connexion")
-        self.setFixedSize(980, 610)
+        self.setFixedSize(980, 660)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self._drag_pos = None
         self._build_ui()
@@ -201,7 +201,7 @@ class LoginWindow(QWidget):
     def _build_ui(self):
         # Background animé pleine fenêtre
         self.bg = MatrixBackground(self)
-        self.bg.setGeometry(0, 0, 980, 610)
+        self.bg.setGeometry(0, 0, 980, 660)
 
         # Layout racine VERTICAL : barre de titre + contenu
         outer = QVBoxLayout(self)
@@ -282,7 +282,7 @@ class LoginWindow(QWidget):
         logo_path = os.path.join(BASE_DIR, "logo.png")
         pixmap = QPixmap(logo_path)
         logo_label.setPixmap(
-            pixmap.scaled(300, 300,
+            pixmap.scaled(260, 260,
                           Qt.AspectRatioMode.KeepAspectRatio,
                           Qt.TransformationMode.SmoothTransformation)
         )
@@ -306,13 +306,14 @@ class LoginWindow(QWidget):
             background: transparent;
         """)
 
-        lbl_tag = QLabel("SÉCURISÉ  ·  FIABLE   ·  RAPIDE ")
+        lbl_tag = QLabel("SÉCURISÉ  ·  FIABLE  ·  RAPIDE")
         lbl_tag.setAlignment(Qt.AlignmentFlag.AlignCenter)
         lbl_tag.setStyleSheet("""
             color: #2a9fd6;
             font-family: 'Courier New';
-            font-size: 12px;
-            letter-spacing: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 4px;
             background: transparent;
         """)
 
@@ -357,7 +358,7 @@ class LoginWindow(QWidget):
         lbl_conn.setStyleSheet("""
             color: #ddeeff;
             font-family: 'Courier New';
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             letter-spacing: 2px;
             background: transparent;
@@ -409,7 +410,8 @@ class LoginWindow(QWidget):
         lbl_forgot.setStyleSheet("""
             color: #2a9fd6;
             font-family: 'Courier New';
-            font-size: 11px;
+            font-size: 12px;
+            font-weight: bold;
             text-decoration: underline;
             background: transparent;
         """)
