@@ -139,7 +139,7 @@ class GlowCard(QWidget):
 # ══════════════════════════════════════════════════════════════════════════════
 #  Helpers UI
 # ══════════════════════════════════════════════════════════════════════════════
-def lbl(text, size=11, color=C_TEXT, bold=False, spacing=0):
+def lbl(text, size=12, color=C_TEXT, bold=False, spacing=0):
     l = QLabel(text)
     weight = "bold" if bold else "normal"
     l.setStyleSheet(f"""
@@ -180,30 +180,71 @@ def field(placeholder, password=False):
     """)
     return f
 
-def btn(text, color=C_ACCENT, w=None, h=38):
+def btn(text, color=C_ACCENT, w=None, h=40):
     b = QPushButton(text)
     b.setFixedHeight(h)
     if w: b.setFixedWidth(w)
     b.setCursor(Qt.CursorShape.PointingHandCursor)
     b.setStyleSheet(f"""
         QPushButton {{
-            background: {color}20;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 {color}55, stop:1 {color}22);
             color: {color};
-            border: 1px solid {color}60;
+            border: 1px solid {color}88;
             border-radius: 3px;
             font-family: '{FONT}';
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
-            letter-spacing: 2px;
-            padding: 0 14px;
+            letter-spacing: 3px;
+            padding: 0 16px;
         }}
         QPushButton:hover {{
-            background: {color}40;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                stop:0 {color}99, stop:1 {color}44);
             border-color: {color};
         }}
-        QPushButton:pressed {{ background: {color}60; }}
+        QPushButton:pressed {{ background: {color}66; }}
     """)
     return b
+
+# Label de section — gros titre blanc comme "Connexion" dans le login
+def lbl_title(text):
+    l = QLabel(text)
+    l.setStyleSheet(f"""
+        color: {C_TEXT};
+        font-family: '{FONT}';
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        background: transparent;
+    """)
+    return l
+
+# Sous-titre cyan — comme "ACCÈS SÉCURISÉ" dans le login
+def lbl_sub(text):
+    l = QLabel(text)
+    l.setStyleSheet(f"""
+        color: {C_ACCENT};
+        font-family: '{FONT}';
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 5px;
+        background: transparent;
+    """)
+    return l
+
+# Label de champ — comme "NOM D'UTILISATEUR" dans le login
+def lbl_field(text):
+    l = QLabel(text)
+    l.setStyleSheet(f"""
+        color: {C_ACCENT};
+        font-family: '{FONT}';
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        background: transparent;
+    """)
+    return l
 
 def scroll_wrap(inner):
     s = QScrollArea()
@@ -223,12 +264,12 @@ def scroll_wrap(inner):
 # ══════════════════════════════════════════════════════════════════════════════
 class StatCard(GlowCard):
     def __init__(self, title, value, color=C_ACCENT, parent=None):
-        super().__init__(260, 100, parent)
+        super().__init__(260, 110, parent)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 14, 20, 14)
         layout.setSpacing(6)
-        layout.addWidget(lbl(title.upper(), size=8, color=C_DIM, spacing=2))
-        layout.addWidget(lbl(value, size=22, color=color, bold=True))
+        layout.addWidget(lbl(title.upper(), size=9, color=C_ACCENT, bold=True, spacing=3))
+        layout.addWidget(lbl(value, size=24, color=C_TEXT, bold=True))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -266,11 +307,11 @@ class SidebarBtn(QPushButton):
     def _set_style(self, active):
         if active:
             self._bar.show()
-            self._lbl.setStyleSheet(f"color: {C_ACCENT2}; font-family: '{FONT}'; font-size: 11px; font-weight: bold; letter-spacing: 1px; background: transparent;")
+            self._lbl.setStyleSheet(f"color: {C_ACCENT2}; font-family: '{FONT}'; font-size: 13px; font-weight: bold; letter-spacing: 1px; background: transparent;")
             self.setStyleSheet(f"QPushButton {{ background: {C_ACCENT}18; border: none; }}")
         else:
             self._bar.hide()
-            self._lbl.setStyleSheet(f"color: {C_DIM}; font-family: '{FONT}'; font-size: 11px; letter-spacing: 1px; background: transparent;")
+            self._lbl.setStyleSheet(f"color: {C_DIM}; font-family: '{FONT}'; font-size: 13px; letter-spacing: 1px; background: transparent;")
             self.setStyleSheet("QPushButton { background: transparent; border: none; } QPushButton:hover { background: #0d1e2a; }")
 
 
@@ -285,9 +326,9 @@ def page_dashboard(username):
 
     # En-tête
     hdr = QHBoxLayout()
-    col = QVBoxLayout(); col.setSpacing(3)
-    col.addWidget(lbl("TABLEAU DE BORD", size=18, bold=True, spacing=2))
-    col.addWidget(lbl(f"BIENVENUE, {username.upper()}  ·  ADMIN", size=9, color=C_DIM, spacing=2))
+    col = QVBoxLayout(); col.setSpacing(4)
+    col.addWidget(lbl_sub("TABLEAU DE BORD"))
+    col.addWidget(lbl_title(f"Bienvenue, {username}"))
     hdr.addLayout(col); hdr.addStretch()
     hdr.addWidget(lbl("BEATS BANK  //  v2.0.0", size=9, color=C_DIM))
     lay.addLayout(hdr)
@@ -306,7 +347,7 @@ def page_dashboard(username):
     lay.addLayout(grid)
 
     # Activité récente
-    lay.addWidget(lbl("ACTIVITE RECENTE", size=9, color=C_DIM, spacing=2))
+    lay.addWidget(lbl_field("ACTIVITE RECENTE"))
     act_w = QWidget()
     act_w.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 6px;")
     act_l = QVBoxLayout(act_w); act_l.setContentsMargins(20, 16, 20, 16); act_l.setSpacing(12)
@@ -317,13 +358,13 @@ def page_dashboard(username):
         ("Virement — Sophie Lavoie",  "-1 200 $",  C_YELLOW),
         ("Depot — Marc Beaulieu",     "+5 000 $",  C_GREEN),
     ]
-    for desc, amount, color in rows:
+    for idx, (desc, amount, color) in enumerate(rows):
         r = QHBoxLayout()
-        r.addWidget(lbl(desc, size=11))
+        r.addWidget(lbl(desc, size=12))
         r.addStretch()
-        r.addWidget(lbl(amount, size=11, color=color, bold=True))
+        r.addWidget(lbl(amount, size=12, color=color, bold=True))
         act_l.addLayout(r)
-        if rows.index((desc, amount, color)) < len(rows) - 1:
+        if idx < len(rows) - 1:
             act_l.addWidget(h_sep())
 
     lay.addWidget(act_w)
@@ -337,23 +378,21 @@ def page_clients():
     lay = QVBoxLayout(outer); lay.setContentsMargins(36, 28, 36, 28); lay.setSpacing(18)
 
     hdr = QHBoxLayout()
-    col = QVBoxLayout(); col.setSpacing(3)
-    col.addWidget(lbl("GESTION DES CLIENTS", size=18, bold=True, spacing=2))
-    col.addWidget(lbl("AJOUTER, MODIFIER OU RETIRER DES CLIENTS", size=9, color=C_DIM, spacing=2))
+    col = QVBoxLayout(); col.setSpacing(4)
+    col.addWidget(lbl_sub("GESTION"))
+    col.addWidget(lbl_title("Clients"))
     hdr.addLayout(col); hdr.addStretch()
     hdr.addWidget(btn("NOUVEAU CLIENT", C_GREEN))
     lay.addLayout(hdr)
     lay.addWidget(h_sep())
 
-    # Recherche
     lay.addWidget(field("Rechercher un client..."))
 
-    # En-tête tableau
-    th = QWidget(); th.setFixedHeight(34)
+    th = QWidget(); th.setFixedHeight(36)
     th.setStyleSheet(f"background: {C_BORDER}; border-radius: 3px;")
     thl = QHBoxLayout(th); thl.setContentsMargins(16, 0, 16, 0)
     for col_name in ["NOM", "PRENOM", "AGE", "NB CARTES", ""]:
-        thl.addWidget(lbl(col_name, size=9, color=C_ACCENT, bold=True, spacing=2))
+        thl.addWidget(lbl(col_name, size=10, color=C_ACCENT, bold=True, spacing=2))
     lay.addWidget(th)
 
     clients = [
@@ -364,14 +403,14 @@ def page_clients():
         ("Roy",      "Isabelle","31", "2"),
     ]
     for nom, prenom, age, cartes in clients:
-        rw = QWidget(); rw.setFixedHeight(46)
+        rw = QWidget(); rw.setFixedHeight(48)
         rw.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 3px;")
         rl = QHBoxLayout(rw); rl.setContentsMargins(16, 0, 16, 0); rl.setSpacing(0)
         for val in [nom, prenom, age, cartes]:
-            rl.addWidget(lbl(val, size=11))
+            rl.addWidget(lbl(val, size=12))
         rl.addStretch()
-        b1 = btn("MODIFIER", C_ACCENT, w=100, h=30)
-        b2 = btn("RETIRER",  C_RED,    w=90,  h=30)
+        b1 = btn("MODIFIER", C_ACCENT, w=110, h=32)
+        b2 = btn("RETIRER",  C_RED,    w=100, h=32)
         rl.addWidget(b1); rl.addSpacing(8); rl.addWidget(b2)
         lay.addWidget(rw)
 
@@ -385,9 +424,9 @@ def page_cartes():
     lay = QVBoxLayout(outer); lay.setContentsMargins(36, 28, 36, 28); lay.setSpacing(18)
 
     hdr = QHBoxLayout()
-    col = QVBoxLayout(); col.setSpacing(3)
-    col.addWidget(lbl("GESTION DES CARTES", size=18, bold=True, spacing=2))
-    col.addWidget(lbl("AJOUTER OU SUPPRIMER DES CARTES CLIENTS", size=9, color=C_DIM, spacing=2))
+    col = QVBoxLayout(); col.setSpacing(4)
+    col.addWidget(lbl_sub("GESTION"))
+    col.addWidget(lbl_title("Cartes"))
     hdr.addLayout(col); hdr.addStretch()
     hdr.addWidget(btn("NOUVELLE CARTE", C_GREEN))
     lay.addLayout(hdr)
@@ -401,20 +440,20 @@ def page_cartes():
         ("**** **** **** 1155", "Marie Tremblay",  "06/28", "12 400 $", C_ACCENT2),
     ]
     for numero, client, exp, solde, color in cartes:
-        cw = QWidget(); cw.setFixedHeight(70)
+        cw = QWidget(); cw.setFixedHeight(72)
         cw.setStyleSheet(f"""
             background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 {C_CARD2}, stop:1 {C_CARD});
             border: 1px solid {color}44;
             border-radius: 6px;
         """)
         cl = QHBoxLayout(cw); cl.setContentsMargins(20, 0, 20, 0); cl.setSpacing(24)
-        cl.addWidget(lbl(numero,  size=13, color=color, bold=True))
-        cl.addWidget(lbl(client,  size=11))
-        cl.addWidget(lbl(f"EXP: {exp}", size=10, color=C_DIM))
+        cl.addWidget(lbl(numero,       size=13, color=color, bold=True))
+        cl.addWidget(lbl(client,       size=12))
+        cl.addWidget(lbl(f"EXP: {exp}", size=11, color=C_DIM))
         cl.addStretch()
-        cl.addWidget(lbl(solde, size=14, color=color, bold=True))
+        cl.addWidget(lbl(solde, size=15, color=color, bold=True))
         cl.addSpacing(16)
-        cl.addWidget(btn("SUPPRIMER", C_RED, h=30))
+        cl.addWidget(btn("SUPPRIMER", C_RED, h=32))
         lay.addWidget(cw)
 
     lay.addStretch()
@@ -426,15 +465,16 @@ def page_transactions():
     outer = QWidget(); outer.setStyleSheet("background: transparent;")
     lay = QVBoxLayout(outer); lay.setContentsMargins(36, 28, 36, 28); lay.setSpacing(18)
 
-    lay.addWidget(lbl("VIREMENTS / TRANSACTIONS", size=18, bold=True, spacing=2))
-    lay.addWidget(lbl("EFFECTUER ET CONSULTER LES TRANSACTIONS", size=9, color=C_DIM, spacing=2))
+    hdr = QVBoxLayout(); hdr.setSpacing(4)
+    hdr.addWidget(lbl_sub("VIREMENTS"))
+    hdr.addWidget(lbl_title("Transactions"))
+    lay.addLayout(hdr)
     lay.addWidget(h_sep())
 
-    # Formulaire
     fw = QWidget()
     fw.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 6px;")
     fl = QVBoxLayout(fw); fl.setContentsMargins(24, 18, 24, 18); fl.setSpacing(12)
-    fl.addWidget(lbl("NOUVEAU VIREMENT", size=9, color=C_ACCENT, bold=True, spacing=3))
+    fl.addWidget(lbl_field("NOUVEAU VIREMENT"))
 
     r1 = QHBoxLayout(); r1.setSpacing(12)
     r1.addWidget(field("Carte source  (ex: **** 4521)"))
@@ -447,13 +487,12 @@ def page_transactions():
     fl.addLayout(r2)
 
     brow = QHBoxLayout()
-    brow.addWidget(btn("EFFECTUER LE VIREMENT", C_ACCENT, h=40))
+    brow.addWidget(btn("EFFECTUER LE VIREMENT", C_ACCENT, h=42))
     brow.addStretch()
     fl.addLayout(brow)
     lay.addWidget(fw)
 
-    # Historique
-    lay.addWidget(lbl("HISTORIQUE", size=9, color=C_DIM, spacing=2))
+    lay.addWidget(lbl_field("HISTORIQUE"))
     history = [
         ("2025-04-15", "Depot",    "Marie Tremblay",  "Jean Gagnon",   "+2 500 $",  C_GREEN),
         ("2025-04-14", "Retrait",  "Jean Gagnon",     "—",             "-800 $",    C_RED),
@@ -461,14 +500,14 @@ def page_transactions():
         ("2025-04-12", "Depot",    "Marc Beaulieu",   "—",             "+5 000 $",  C_GREEN),
     ]
     for date, typ, src, dst, amount, color in history:
-        rw = QWidget(); rw.setFixedHeight(42)
+        rw = QWidget(); rw.setFixedHeight(44)
         rw.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 3px;")
         rl = QHBoxLayout(rw); rl.setContentsMargins(16, 0, 16, 0); rl.setSpacing(0)
-        for txt, clr, w in [(date, C_DIM, 90), (typ, C_ACCENT, 80), (src, C_TEXT, 150), (dst, C_DIM, 150)]:
-            l2 = lbl(txt, size=10, color=clr); l2.setFixedWidth(w)
+        for txt, clr, w in [(date, C_DIM, 95), (typ, C_ACCENT, 85), (src, C_TEXT, 155), (dst, C_DIM, 155)]:
+            l2 = lbl(txt, size=11, color=clr); l2.setFixedWidth(w)
             rl.addWidget(l2)
         rl.addStretch()
-        rl.addWidget(lbl(amount, size=11, color=color, bold=True))
+        rl.addWidget(lbl(amount, size=12, color=color, bold=True))
         lay.addWidget(rw)
 
     lay.addStretch()
@@ -480,8 +519,10 @@ def page_investissements():
     outer = QWidget(); outer.setStyleSheet("background: transparent;")
     lay = QVBoxLayout(outer); lay.setContentsMargins(36, 28, 36, 28); lay.setSpacing(18)
 
-    lay.addWidget(lbl("INVESTISSEMENTS", size=18, bold=True, spacing=2))
-    lay.addWidget(lbl("GERER LE MONTANT INVESTI DE LA BANQUE", size=9, color=C_DIM, spacing=2))
+    hdr = QVBoxLayout(); hdr.setSpacing(4)
+    hdr.addWidget(lbl_sub("GESTION"))
+    hdr.addWidget(lbl_title("Investissements"))
+    lay.addLayout(hdr)
     lay.addWidget(h_sep())
 
     sl = QHBoxLayout(); sl.setSpacing(12)
@@ -492,7 +533,7 @@ def page_investissements():
     fw = QWidget()
     fw.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 6px;")
     fl = QVBoxLayout(fw); fl.setContentsMargins(24, 18, 24, 18); fl.setSpacing(12)
-    fl.addWidget(lbl("NOUVELLE OPERATION", size=9, color=C_ACCENT, bold=True, spacing=3))
+    fl.addWidget(lbl_field("NOUVELLE OPERATION"))
 
     r = QHBoxLayout(); r.setSpacing(12)
     r.addWidget(field("Montant ($)"))
@@ -500,8 +541,8 @@ def page_investissements():
     fl.addLayout(r)
 
     br = QHBoxLayout(); br.setSpacing(12)
-    br.addWidget(btn("INVESTIR",              C_GREEN, h=40))
-    br.addWidget(btn("RETIRER INVESTISSEMENT", C_RED,   h=40))
+    br.addWidget(btn("INVESTIR",               C_GREEN, h=42))
+    br.addWidget(btn("RETIRER INVESTISSEMENT", C_RED,   h=42))
     br.addStretch()
     fl.addLayout(br)
     lay.addWidget(fw)
@@ -514,8 +555,10 @@ def page_parametres(username):
     outer = QWidget(); outer.setStyleSheet("background: transparent;")
     lay = QVBoxLayout(outer); lay.setContentsMargins(36, 28, 36, 28); lay.setSpacing(18)
 
-    lay.addWidget(lbl("PARAMETRES", size=18, bold=True, spacing=2))
-    lay.addWidget(lbl("GESTION DES ADMINS ET CONFIGURATION", size=9, color=C_DIM, spacing=2))
+    hdr = QVBoxLayout(); hdr.setSpacing(4)
+    hdr.addWidget(lbl_sub("CONFIGURATION"))
+    hdr.addWidget(lbl_title("Parametres"))
+    lay.addLayout(hdr)
     lay.addWidget(h_sep())
 
     # Profil
@@ -532,13 +575,13 @@ def page_parametres(username):
         border-radius: 26px;
         color: {C_ACCENT};
         font-family: '{FONT}';
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
     """)
 
-    info = QVBoxLayout(); info.setSpacing(2)
-    info.addWidget(lbl(username.upper(), size=15, bold=True))
-    info.addWidget(lbl("SUPER ADMIN  ·  BEATS BANK", size=9, color=C_ACCENT, spacing=2))
+    info = QVBoxLayout(); info.setSpacing(4)
+    info.addWidget(lbl(username.upper(), size=16, bold=True))
+    info.addWidget(lbl("SUPER ADMIN  ·  BEATS BANK", size=10, color=C_ACCENT, bold=True, spacing=2))
 
     pl.addWidget(av)
     pl.addLayout(info)
@@ -546,21 +589,21 @@ def page_parametres(username):
     pl.addWidget(btn("MODIFIER PROFIL", C_ACCENT))
     lay.addWidget(pw)
 
-    lay.addWidget(lbl("ADMINISTRATEURS", size=9, color=C_DIM, spacing=2))
+    lay.addWidget(lbl_field("ADMINISTRATEURS"))
 
     admins = [("admin", "Super Admin"), ("gestionnaire01", "Admin"), ("gestionnaire02", "Admin")]
     for uname, role in admins:
-        rw = QWidget(); rw.setFixedHeight(46)
+        rw = QWidget(); rw.setFixedHeight(48)
         rw.setStyleSheet(f"background: {C_CARD}; border: 1px solid {C_BORDER}; border-radius: 3px;")
         rl = QHBoxLayout(rw); rl.setContentsMargins(20, 0, 16, 0); rl.setSpacing(16)
-        rl.addWidget(lbl(uname, size=11))
-        rl.addWidget(lbl(role, size=9, color=C_ACCENT, spacing=1))
+        rl.addWidget(lbl(uname, size=12))
+        rl.addWidget(lbl(role, size=10, color=C_ACCENT, bold=True, spacing=1))
         rl.addStretch()
         if uname != "admin":
-            rl.addWidget(btn("RETIRER", C_RED, h=30))
+            rl.addWidget(btn("RETIRER", C_RED, h=32))
         lay.addWidget(rw)
 
-    lay.addWidget(btn("AJOUTER UN ADMIN", C_GREEN, h=40))
+    lay.addWidget(btn("AJOUTER UN ADMIN", C_GREEN, h=42))
     lay.addStretch()
     return scroll_wrap(outer)
 
@@ -595,7 +638,7 @@ class DashboardWindow(QWidget):
         tb.setContentsMargins(14, 0, 10, 0)
         tb.setSpacing(6)
 
-        tb.addWidget(lbl("BEATS BANK  //  TABLEAU DE BORD ADMIN", size=9, color=C_DIM, spacing=2))
+        tb.addWidget(lbl("BEATS BANK  //  TABLEAU DE BORD ADMIN", size=10, color=C_DIM, spacing=2))
         tb.addStretch()
 
         for symbol, action, hover_color in [("─", self.showMinimized, C_ACCENT), ("✕", self.close, C_RED)]:
@@ -638,7 +681,7 @@ class DashboardWindow(QWidget):
         lbl_logo.setStyleSheet("background: transparent;")
 
         lbl_bank = QLabel("BEATS\nBANK")
-        lbl_bank.setStyleSheet(f"color: {C_TEXT}; font-family: '{FONT}'; font-size: 13px; font-weight: bold; letter-spacing: 3px; background: transparent;")
+        lbl_bank.setStyleSheet(f"color: {C_TEXT}; font-family: '{FONT}'; font-size: 14px; font-weight: bold; letter-spacing: 3px; background: transparent;")
 
         logo_l.addWidget(lbl_logo)
         logo_l.addWidget(lbl_bank)
